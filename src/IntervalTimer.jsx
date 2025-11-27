@@ -62,6 +62,12 @@ const IntervalTimerContent = () => {
         <Route path="run/:id" element={<IntervalRunner />} />
         <Route path="about" element={<IntervalAbout />} />
       </Routes>
+
+      {onIntervalsLol && (
+        <footer className="intervals-footer">
+          Made with ❤️ in NYC by <a href="https://russellromney.com" target="_blank" rel="noopener noreferrer">Russell Romney</a>
+        </footer>
+      )}
     </div>
   );
 };
