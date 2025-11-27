@@ -65,6 +65,7 @@ export const WorkoutProvider = ({ children }) => {
     const trimmed = input.trim();
     if (!trimmed) return 0;
 
+    // Support both "M:SS" format and plain seconds
     if (trimmed.includes(":")) {
       const parts = trimmed.split(":");
       if (parts.length !== 2) return 0;
@@ -75,6 +76,7 @@ export const WorkoutProvider = ({ children }) => {
       if (secs >= 60) return 0;
       return mins * 60 + secs;
     } else {
+      // Accept plain seconds input
       const num = parseInt(trimmed, 10);
       if (isNaN(num)) return 0;
       if (num < 0) return 0;
