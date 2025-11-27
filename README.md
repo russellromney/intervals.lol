@@ -27,6 +27,17 @@ npm run build
 npm run preview
 ```
 
+## Deployment
+
+Want to run your own instance? See [DEPLOY.md](./DEPLOY.md) for complete setup guide covering:
+
+- **Vercel** (easiest, 2 minutes)
+- **Netlify** (drag & drop deployment)
+- **Fly.io** (with Dockerfile included)
+- **GitHub Pages** (free, zero config)
+- **AWS S3** (with CloudFront)
+- **Any static host** (instructions included)
+
 ## Tech Stack
 
 - React 18
@@ -34,6 +45,13 @@ npm run preview
 - React Router
 - Web Speech API (for voice announcements)
 - LocalStorage (for saving workouts)
+
+## Security & Privacy
+
+✅ **100% Client-Side** - No data ever sent to servers
+✅ **LocalStorage Only** - All workouts saved in browser
+✅ **Offline First** - Works without internet connection
+✅ **Open Source** - Audit the code yourself
 
 ## License
 
