@@ -23,6 +23,10 @@ export const WorkoutProvider = ({ children }) => {
   const [workouts, setWorkouts] = useState([]);
   const [completions, setCompletions] = useState([]);
   const [voiceEnabled] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    return saved ? JSON.parse(saved) : false;
+  });
   const [timerState, setTimerState] = useState({
     isRunning: false,
     currentWorkout: null,
@@ -51,6 +55,12 @@ export const WorkoutProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("completions", JSON.stringify(completions));
   }, [completions]);
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+    // Update body background to match dark/light mode
+    document.body.style.backgroundColor = darkMode ? '#000000' : '#f9fafb';
+  }, [darkMode]);
 
   // Helper functions
   const generateId = () => crypto.randomUUID();
@@ -360,6 +370,8 @@ export const WorkoutProvider = ({ children }) => {
     saveMessage,
     setSaveMessage,
     voiceEnabled,
+    darkMode,
+    setDarkMode,
     // Helpers
     generateId,
     formatTime,

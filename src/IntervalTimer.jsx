@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Routes, Route, NavLink, Link } from "react-router-dom";
-import { WorkoutProvider, isIntervalsLol, getBasePath } from "./WorkoutContext";
+import { WorkoutProvider, isIntervalsLol, getBasePath, useWorkout } from "./WorkoutContext";
 import IntervalLibrary from "./IntervalLibrary";
 import IntervalEditor from "./IntervalEditor";
 import IntervalHistory from "./IntervalHistory";
@@ -11,6 +11,7 @@ import "./IntervalTimer.css";
 const IntervalTimerContent = () => {
   const basePath = getBasePath();
   const onIntervalsLol = isIntervalsLol();
+  const { darkMode, setDarkMode } = useWorkout();
 
   // Set page title
   useEffect(() => {
@@ -20,7 +21,7 @@ const IntervalTimerContent = () => {
   }, [onIntervalsLol]);
 
   return (
-    <div className="workout-timer-app">
+    <div className={`workout-timer-app ${darkMode ? 'dark-mode' : ''}`}>
       {!onIntervalsLol && (
         <div className="timer-home-link">
           <a href="/">Back to russellromney.com</a>
@@ -32,7 +33,7 @@ const IntervalTimerContent = () => {
             intervals.lol
           </Link>
         )}
-        <div className="nav-tabs">
+        <div className="nav-tabs nav-tabs-left">
           <NavLink
             to={basePath || '/'}
             end
@@ -53,6 +54,13 @@ const IntervalTimerContent = () => {
             About
           </NavLink>
         </div>
+        <button
+          className="dark-mode-toggle"
+          onClick={() => setDarkMode(!darkMode)}
+          title={darkMode ? "Light mode" : "Dark mode"}
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
       </nav>
 
       <Routes>
@@ -65,7 +73,7 @@ const IntervalTimerContent = () => {
 
       {onIntervalsLol && (
         <footer className="intervals-footer">
-          Made with ❤️ in NYC by <a href="https://russellromney.com" target="_blank" rel="noopener noreferrer">Russell Romney</a>
+          Made with ❤️ in NYC by <a href="https://russellromney.com" target="_blank" rel="noopener noreferrer">me</a>
         </footer>
       )}
     </div>
