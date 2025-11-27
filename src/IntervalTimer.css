@@ -1,0 +1,1083 @@
+/* Workout Timer App - Modern, Scoped Styles */
+.workout-timer-app {
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-light: #e0e7ff;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --bg: #ffffff;
+    --bg-light: #f9fafb;
+    --bg-secondary: #f3f4f6;
+    --text: #111827;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+    --border: #e5e7eb;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.1);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: all 0.2s ease;
+}
+
+.workout-timer-app * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.workout-timer-app {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+.workout-timer-app .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Home Link */
+.workout-timer-app .timer-home-link {
+    padding: 12px 20px;
+    background-color: var(--bg);
+    border-bottom: 1px solid var(--border);
+}
+
+.workout-timer-app .timer-home-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.workout-timer-app .timer-home-link a:hover {
+    text-decoration: underline;
+}
+
+/* Views */
+.workout-timer-app .view {
+    display: none;
+    min-height: 100vh;
+    padding: 24px 0;
+}
+
+.workout-timer-app .view.active {
+    display: block;
+}
+
+.workout-timer-app #timerView {
+    display: none;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg) 0%, var(--bg-light) 100%);
+}
+
+.workout-timer-app #timerView.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.workout-timer-app .view-tabs.hidden {
+    display: none;
+}
+
+/* Header & Navigation */
+.workout-timer-app .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 16px;
+}
+
+.workout-timer-app .page-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+}
+
+.workout-timer-app .view-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.workout-timer-app .brand-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    margin-right: 16px;
+    padding: 12px 0;
+    letter-spacing: -0.5px;
+}
+
+.workout-timer-app .brand-logo:hover {
+    color: var(--primary-hover);
+}
+
+.workout-timer-app .nav-tabs {
+    display: flex;
+    gap: 0;
+}
+
+.workout-timer-app .tab-btn {
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text-secondary);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.workout-timer-app .tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.workout-timer-app .tab-btn:hover {
+    color: var(--text);
+}
+
+/* Buttons */
+.workout-timer-app .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.workout-timer-app .btn-primary {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+.workout-timer-app .btn-primary:hover {
+    background-color: var(--primary-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.workout-timer-app .btn-primary:active {
+    transform: translateY(0);
+}
+
+.workout-timer-app .btn-secondary {
+    background-color: var(--bg-secondary);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.workout-timer-app .btn-secondary:hover {
+    background-color: var(--border);
+    border-color: var(--text-tertiary);
+}
+
+.workout-timer-app .btn-danger {
+    background-color: var(--danger);
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+.workout-timer-app .btn-danger:hover {
+    background-color: #dc2626;
+    box-shadow: var(--shadow-md);
+}
+
+.workout-timer-app .btn-large {
+    padding: 16px 40px;
+    font-size: 16px;
+    border-radius: var(--radius);
+}
+
+.workout-timer-app .btn-small {
+    padding: 8px 12px;
+    font-size: 13px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.workout-timer-app .btn-small:hover {
+    background-color: var(--border);
+}
+
+.workout-timer-app .btn-icon {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    color: var(--text-secondary);
+}
+
+.workout-timer-app .btn-icon:hover {
+    color: var(--text);
+    background-color: var(--bg-secondary);
+}
+
+/* Workout Library */
+.workout-timer-app .workouts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.workout-timer-app .workout-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.workout-timer-app .workout-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.workout-timer-app .workout-card-header {
+    margin-bottom: 20px;
+}
+
+.workout-timer-app .workout-card-name {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    word-break: break-word;
+    color: var(--text);
+}
+
+.workout-timer-app .workout-card-info {
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.workout-timer-app .workout-card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.workout-timer-app .workout-card-actions button {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 13px;
+}
+
+.workout-timer-app .workout-card-start {
+    grid-column: span 2;
+}
+
+.workout-timer-app .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.workout-timer-app .empty-state.hidden {
+    display: none;
+}
+
+.workout-timer-app .empty-icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+}
+
+.workout-timer-app .empty-state h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.workout-timer-app .empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    font-size: 16px;
+}
+
+/* Workout Editor */
+.workout-timer-app .workout-name-input {
+    flex: 1;
+    font-size: 32px;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    padding: 0;
+}
+
+.workout-timer-app .workout-name-input::placeholder {
+    color: var(--text-tertiary);
+}
+
+.workout-timer-app .workout-name-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.workout-timer-app .editor-content {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+    .workout-timer-app .editor-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+.workout-timer-app .intervals-section h2,
+.workout-timer-app .rounds-section label {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+.workout-timer-app .intervals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.workout-timer-app .interval-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    transition: var(--transition);
+}
+
+.workout-timer-app .interval-row:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+.workout-timer-app .interval-color {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--border);
+    transition: var(--transition);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.workout-timer-app .interval-color:hover {
+    border-color: var(--text);
+    box-shadow: var(--shadow-md);
+}
+
+.workout-timer-app .interval-name {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.workout-timer-app .interval-name:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.workout-timer-app .interval-duration {
+    width: 80px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.workout-timer-app .interval-duration:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.workout-timer-app .interval-duration.invalid {
+    border-color: var(--danger);
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.workout-timer-app .interval-duration.invalid:focus {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.workout-timer-app .interval-error {
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 4px;
+    min-height: 16px;
+}
+
+.workout-timer-app .interval-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.workout-timer-app .interval-btn {
+    padding: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: var(--transition);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+}
+
+.workout-timer-app .interval-btn:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text);
+}
+
+.workout-timer-app .rounds-control {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.workout-timer-app .rounds-control input {
+    width: 70px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    text-align: center;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.workout-timer-app .rounds-control input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.workout-timer-app .total-duration {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding-top: 16px;
+    margin-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.workout-timer-app .total-duration strong {
+    color: var(--primary);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.workout-timer-app .editor-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.workout-timer-app .editor-footer button {
+    min-width: 100px;
+}
+
+.workout-timer-app .save-button-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.workout-timer-app .save-message {
+    color: var(--success);
+    font-size: 14px;
+    font-weight: 600;
+    animation: fadeInOut 2s ease;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.workout-timer-app .btn-danger.hidden {
+    display: none;
+}
+
+/* Timer View */
+.workout-timer-app .timer-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    text-align: center;
+}
+
+.workout-timer-app .timer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+    gap: 20px;
+}
+
+.workout-timer-app .timer-info {
+    flex: 1;
+}
+
+.workout-timer-app .timer-workout-name {
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.workout-timer-app .timer-progress {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-top: 6px;
+}
+
+.workout-timer-app .timer-display {
+    margin-bottom: 60px;
+}
+
+.workout-timer-app .timer-interval-name {
+    font-size: 28px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.workout-timer-app .timer-countdown {
+    font-family: 'Courier New', 'Monaco', monospace;
+    font-size: 140px;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+    margin-bottom: 28px;
+    letter-spacing: -4px;
+}
+
+.workout-timer-app .timer-next-interval {
+    font-size: 15px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+.workout-timer-app .timer-progress-bar {
+    width: 100%;
+    height: 6px;
+    background-color: var(--bg-secondary);
+    border-radius: 3px;
+    margin-bottom: 60px;
+    overflow: hidden;
+}
+
+.workout-timer-app .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.workout-timer-app .timer-controls {
+    margin-bottom: 40px;
+}
+
+.workout-timer-app .timer-controls button {
+    min-width: 200px;
+    padding: 16px 40px;
+    font-size: 16px;
+}
+
+.workout-timer-app .timer-settings {
+    text-align: left;
+    background: var(--bg-secondary);
+    padding: 20px;
+    border-radius: var(--radius-sm);
+}
+
+.workout-timer-app .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.workout-timer-app .checkbox-label input {
+    cursor: pointer;
+    accent-color: var(--primary);
+    width: 18px;
+    height: 18px;
+}
+
+/* History */
+.workout-timer-app .histories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.workout-timer-app .history-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.workout-timer-app .history-item:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+.workout-timer-app .history-item-info h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.workout-timer-app .history-item-date {
+    font-size: 13px;
+    color: var(--text-tertiary);
+}
+
+.workout-timer-app .history-item-duration {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.workout-timer-app .filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.workout-timer-app .filter-btn {
+    padding: 10px 18px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.workout-timer-app .filter-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.workout-timer-app .filter-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.workout-timer-app .filter-btn.active:hover {
+    background: var(--primary-hover);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .workout-timer-app .container {
+        padding: 0 16px;
+    }
+
+    .workout-timer-app .view {
+        padding: 16px 0;
+    }
+
+    .workout-timer-app .interval-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .workout-timer-app .interval-name {
+        flex: 1 1 100%;
+        order: 1;
+    }
+
+    .workout-timer-app .interval-color {
+        order: 0;
+        width: 32px;
+        height: 32px;
+    }
+
+    .workout-timer-app .interval-duration {
+        order: 2;
+        width: 70px;
+    }
+
+    .workout-timer-app .interval-actions {
+        order: 3;
+    }
+
+    .workout-timer-app .editor-footer {
+        flex-wrap: wrap;
+    }
+
+    .workout-timer-app .editor-footer button {
+        min-width: 100px;
+        flex: 1;
+    }
+
+    .workout-timer-app .total-duration strong {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .workout-timer-app .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 16px;
+        gap: 12px;
+    }
+
+    .workout-timer-app .page-header h1 {
+        font-size: 24px;
+    }
+
+    .workout-timer-app .page-header > div {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+    }
+
+    .workout-timer-app .page-header button {
+        flex: 1;
+    }
+
+    .workout-timer-app .workouts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .workout-timer-app .timer-header {
+        margin-bottom: 30px;
+    }
+
+    .workout-timer-app .timer-display {
+        margin-bottom: 30px;
+    }
+
+    .workout-timer-app .timer-countdown {
+        font-size: 72px;
+        letter-spacing: -2px;
+        margin-bottom: 16px;
+    }
+
+    .workout-timer-app .timer-interval-name {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .workout-timer-app .timer-progress-bar {
+        margin-bottom: 30px;
+    }
+
+    .workout-timer-app .timer-controls button {
+        min-width: 150px;
+        padding: 14px 30px;
+    }
+
+    .workout-timer-app .timer-container {
+        padding: 16px;
+    }
+
+    .workout-timer-app .filter-buttons {
+        flex-wrap: wrap;
+    }
+
+    .workout-timer-app .workout-name-input {
+        font-size: 20px;
+    }
+
+    .workout-timer-app .interval-btn {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .workout-timer-app .workout-card-actions {
+        flex-wrap: wrap;
+    }
+
+    .workout-timer-app .workout-card-actions button {
+        flex: 1;
+        min-width: 60px;
+    }
+
+    .workout-timer-app .brand-logo {
+        font-size: 16px;
+        margin-right: 12px;
+        padding: 10px 0;
+    }
+
+    .workout-timer-app .tab-btn {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+}
+
+/* About Page */
+.workout-timer-app .about-content {
+    max-width: 700px;
+}
+
+.workout-timer-app .about-section {
+    margin-bottom: 24px;
+}
+
+.workout-timer-app .about-section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+}
+
+.workout-timer-app .about-section p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+.workout-timer-app .use-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.workout-timer-app .use-case {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    text-align: center;
+}
+
+.workout-timer-app .use-case-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.workout-timer-app .use-case h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.workout-timer-app .use-case p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.workout-timer-app .features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.workout-timer-app .features-list li {
+    font-size: 15px;
+    color: var(--text-secondary);
+    padding: 10px 0;
+    padding-left: 28px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+}
+
+.workout-timer-app .features-list li:last-child {
+    border-bottom: none;
+}
+
+.workout-timer-app .features-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--success);
+    font-weight: 600;
+}
+
+.workout-timer-app .features-list li strong {
+    color: var(--text);
+}
+
+.workout-timer-app .how-to-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: step-counter;
+}
+
+.workout-timer-app .how-to-list li {
+    font-size: 15px;
+    color: var(--text-secondary);
+    padding: 16px 0;
+    padding-left: 48px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    counter-increment: step-counter;
+}
+
+.workout-timer-app .how-to-list li:last-child {
+    border-bottom: none;
+}
+
+.workout-timer-app .how-to-list li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 28px;
+    height: 28px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.workout-timer-app .how-to-list li strong {
+    color: var(--text);
+}
+
+.workout-timer-app .templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.workout-timer-app .template-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+}
+
+.workout-timer-app .template-card h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.workout-timer-app .template-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.workout-timer-app .about-cta {
+    text-align: center;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+    margin-top: 24px;
+}
+
+/* Backup & Restore */
+.workout-timer-app .data-summary {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.workout-timer-app .backup-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.workout-timer-app .backup-buttons .btn {
+    flex: 1;
+    min-width: 150px;
+}
+
+.workout-timer-app .import-status {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+}
+
+.workout-timer-app .import-status.success {
+    background: rgba(74, 222, 128, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.workout-timer-app .import-status.error {
+    background: rgba(248, 113, 113, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}
