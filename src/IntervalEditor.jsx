@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useWorkout, getBasePath } from "./WorkoutContext";
 
@@ -6,6 +6,7 @@ const IntervalEditor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const basePath = getBasePath();
+  const [draggedIndex, setDraggedIndex] = useState(null);
   const {
     getWorkout,
     updateWorkout,
@@ -61,6 +62,28 @@ const IntervalEditor = () => {
     }
   };
 
+  const handleDragStart = (e, idx) => {
+    setDraggedIndex(idx);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e, dropIdx) => {
+    e.preventDefault();
+    if (draggedIndex !== null && draggedIndex !== dropIdx) {
+      moveInterval(id, draggedIndex, dropIdx);
+      setDraggedIndex(null);
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
   return (
     <div className="view active" style={{ display: "block" }}>
       <div className="container">
@@ -84,10 +107,24 @@ const IntervalEditor = () => {
             <h2>Intervals</h2>
             <div className="intervals-list">
               {workout.intervals.map((interval, idx) => (
-                <div key={interval.id}>
+                <div
+                  key={interval.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, idx)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, idx)}
+                  onDragEnd={handleDragEnd}
+                  style={{
+                    opacity: draggedIndex === idx ? 0.5 : 1,
+                    cursor: 'grab',
+                  }}
+                >
                   <div
                     className="interval-row"
-                    style={{ borderLeft: `4px solid ${interval.color}` }}
+                    style={{
+                      borderLeft: `4px solid ${interval.color}`,
+                      backgroundColor: draggedIndex === idx ? 'var(--primary-light)' : 'transparent',
+                    }}
                   >
                     <div
                       className="interval-color"
@@ -111,6 +148,8 @@ const IntervalEditor = () => {
                       type="text"
                       className="interval-duration"
                       defaultValue={formatTime(interval.duration)}
+                      placeholder="45s or 1:30"
+                      title="Enter time as seconds (45) or M:SS (1:30)"
                       onChange={(e) => {
                         const parsed = parseTimeInput(e.target.value);
                         if (parsed > 0) {
