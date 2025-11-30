@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "preact/hooks";
 import { Routes, Route, NavLink, Link } from "react-router-dom";
 import { WorkoutProvider, isIntervalsLol, getBasePath, useWorkout } from "./WorkoutContext";
 import IntervalLibrary from "./IntervalLibrary";
