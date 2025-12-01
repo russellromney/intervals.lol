@@ -6,12 +6,15 @@ A simple, customizable interval timer for workouts, pomodoro sessions, or any ti
 
 ## Features
 
-- Create custom interval sequences with work/rest periods
-- Voice announcements for interval changes
-- Save and load workout presets
-- Track workout history
-- Works offline (PWA-ready)
-- No account required - data stored locally
+- ⏱️ Create custom interval sequences with work/rest periods
+- 🔊 Voice announcements for interval changes
+- 💾 Save and load workout presets
+- 📊 Track workout history and stats
+- 📱 Works offline (PWA-ready)
+- 🔐 No account required - data stored locally in browser
+- ☁️ Optional cloud sync across devices with self-hosted backend
+- 👥 Multiple profiles for different users or use cases
+- 🔒 Password-protected backend for secure sync
 
 ## Quick Start
 
@@ -27,6 +30,30 @@ npm run build
 npm run preview
 ```
 
+## Development
+
+Use the `Makefile` for common tasks:
+
+```bash
+make help      # Show all available commands
+make dev       # Start frontend dev server
+make build     # Build for production
+make test      # Run e2e tests
+make clean     # Clean build artifacts
+make backend-dev  # Run backend dev server
+```
+
+### Backend Development
+
+The backend is a Go server for optional cloud sync. To run it locally:
+
+```bash
+cd backend
+go run ./cmd/server
+```
+
+The backend syncs timers and history across devices with optional password protection.
+
 ## Deployment
 
 Want to run your own instance? See [DEPLOY.md](./DEPLOY.md) for complete setup guide covering:
@@ -40,18 +67,27 @@ Want to run your own instance? See [DEPLOY.md](./DEPLOY.md) for complete setup g
 
 ## Tech Stack
 
-- React 18
+**Frontend:**
+- React 18 / Preact (aliased via React)
 - Vite
 - React Router
 - Web Speech API (for voice announcements)
 - LocalStorage (for saving workouts)
 
+**Backend (Optional for cloud sync):**
+- Go
+- SQLite or Turso
+- Password-based authentication
+- Multi-profile support
+
 ## Security & Privacy
 
-✅ **100% Client-Side** - No data ever sent to servers
-✅ **LocalStorage Only** - All workouts saved in browser
+✅ **Client-First** - All data stored locally by default
+✅ **LocalStorage** - All workouts saved in browser
 ✅ **Offline First** - Works without internet connection
-✅ **Open Source** - Audit the code yourself
+✅ **Optional Cloud Sync** - Only enabled if you deploy your own backend
+✅ **Password Protected** - Backend can be secured with `SYNC_PASSWORD`
+✅ **Open Source** - Audit the code yourself at any time
 
 ## License
 
