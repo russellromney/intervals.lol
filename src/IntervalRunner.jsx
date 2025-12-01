@@ -40,7 +40,7 @@ const IntervalRunner = () => {
       setCompletions(prev => [completion, ...prev]);
 
       setTimerState({
-        isRunning: false,
+        isRunning: true,
         currentWorkout: JSON.parse(JSON.stringify(workout)),
         currentIntervalIndex: 0,
         currentRound: 0,

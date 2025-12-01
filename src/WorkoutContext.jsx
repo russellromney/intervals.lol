@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'preact/compat';
+import SyncService from './SyncService';
 
 const WorkoutContext = createContext();
 
-// Check if we're on intervals.lol domain
+// Check if we're on intervals.lol domain (or localhost for dev)
 export const isIntervalsLol = () => {
   const hostname = window.location.hostname;
-  return hostname === 'intervals.lol' || hostname === 'www.intervals.lol';
+  return hostname === 'intervals.lol' || hostname === 'www.intervals.lol' || hostname === 'localhost';
 };
 
 // Get base path for routes
@@ -38,13 +39,43 @@ export const WorkoutProvider = ({ children }) => {
     currentCompletionId: null,
   });
   const [saveMessage, setSaveMessage] = useState(null);
+  const [syncService] = useState(() => {
+    // Get backend URL from environment or window config
+    const backendURL = import.meta.env?.VITE_SYNC_URL ||
+                       (window.INTERVALS_CONFIG && window.INTERVALS_CONFIG.syncURL);
+    return new SyncService(backendURL);
+  });
+  const [syncStatus, setSyncStatus] = useState({
+    authenticated: false,
+    syncing: false,
+    lastError: null,
+    lastSyncTime: 0,
+  });
 
-  // Load data from localStorage on mount
+  // Load data from localStorage on mount and restore sync session
   useEffect(() => {
     const savedWorkouts = localStorage.getItem("workouts");
     const savedCompletions = localStorage.getItem("completions");
     if (savedWorkouts) setWorkouts(JSON.parse(savedWorkouts));
     if (savedCompletions) setCompletions(JSON.parse(savedCompletions));
+
+    // Set up auth expiry callback
+    syncService.onAuthExpired = () => {
+      setSyncStatus((prev) => ({
+        ...prev,
+        authenticated: false,
+        lastError: 'Session expired. Please re-authenticate.',
+      }));
+    };
+
+    // Load sync session if available
+    if (syncService.loadSession()) {
+      setSyncStatus((prev) => ({
+        ...prev,
+        authenticated: true,
+        lastSyncTime: syncService.lastSyncTime,
+      }));
+    }
   }, []);
 
   // Save data to localStorage whenever it changes
@@ -61,6 +92,53 @@ export const WorkoutProvider = ({ children }) => {
     // Update body background to match dark/light mode
     document.body.style.backgroundColor = darkMode ? '#000000' : '#f9fafb';
   }, [darkMode]);
+
+  // Auto-sync when workouts or completions change (with 5s debounce)
+  useEffect(() => {
+    if (!syncService.isAuthenticated()) return;
+
+    const syncDebounceTimer = setTimeout(() => {
+      syncService.sync(workouts, completions).then((result) => {
+        if (!result.success) {
+          console.error('Sync failed:', result.error);
+          setSyncStatus((prev) => ({
+            ...prev,
+            lastError: result.error,
+            // If auth expired, the callback already set authenticated: false
+            authenticated: result.authExpired ? false : prev.authenticated,
+          }));
+          return;
+        }
+
+        // Merge server changes
+        if (result.workouts && result.workouts.length > 0) {
+          const serverIds = new Set(result.workouts.map(w => w.id));
+          const merged = [
+            ...workouts.filter(w => !serverIds.has(w.id)),
+            ...result.workouts,
+          ];
+          setWorkouts(merged);
+        }
+
+        if (result.completions && result.completions.length > 0) {
+          const serverIds = new Set(result.completions.map(c => c.id));
+          const merged = [
+            ...completions.filter(c => !serverIds.has(c.id)),
+            ...result.completions,
+          ];
+          setCompletions(merged);
+        }
+
+        setSyncStatus((prev) => ({
+          ...prev,
+          lastSyncTime: result.lastSyncTime,
+          lastError: null,
+        }));
+      });
+    }, 5000);
+
+    return () => clearTimeout(syncDebounceTimer);
+  }, [workouts, completions, syncService]);
 
   // Helper functions
   const generateId = () => crypto.randomUUID();
@@ -219,10 +297,11 @@ export const WorkoutProvider = ({ children }) => {
   const moveInterval = (workoutId, fromIndex, toIndex) => {
     const workout = getWorkout(workoutId);
     if (!workout || fromIndex === toIndex) return;
-    const interval = workout.intervals.splice(fromIndex, 1)[0];
-    const adjustedToIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
-    workout.intervals.splice(adjustedToIndex, 0, interval);
-    updateWorkout(workoutId, workout);
+    // Create a new intervals array to trigger React re-render
+    const newIntervals = [...workout.intervals];
+    const [interval] = newIntervals.splice(fromIndex, 1);
+    newIntervals.splice(toIndex, 0, interval);
+    updateWorkout(workoutId, { intervals: newIntervals });
   };
 
   // Helper to calculate elapsed seconds
@@ -335,6 +414,148 @@ export const WorkoutProvider = ({ children }) => {
     });
   };
 
+  // Cloud Sync functions
+  const testConnection = async (backendURL, password = '') => {
+    return await syncService.testConnection(backendURL, password);
+  };
+
+  const getProfiles = async (backendURL, passwordHash = '') => {
+    return await syncService.getProfiles(backendURL, passwordHash);
+  };
+
+  const initializeSync = async (passphrase, backendURL, password = '') => {
+    if (!syncService.backendURL && backendURL) {
+      syncService.backendURL = backendURL;
+    }
+
+    try {
+      // Hash the password if provided
+      let passwordHash = '';
+      if (password) {
+        passwordHash = await syncService.hashString(password);
+      }
+
+      const result = await syncService.initialize(passphrase, backendURL, passwordHash);
+      setSyncStatus((prev) => ({
+        ...prev,
+        authenticated: true,
+        backendURL: backendURL || syncService.backendURL,
+      }));
+
+      // Immediately sync to pull data from server
+      const syncResult = await syncService.sync(workouts, completions);
+      if (syncResult.success) {
+        // Merge server data with local data
+        if (syncResult.workouts && syncResult.workouts.length > 0) {
+          const serverIds = new Set(syncResult.workouts.map(w => w.id));
+          const merged = [
+            ...workouts.filter(w => !serverIds.has(w.id)),
+            ...syncResult.workouts,
+          ];
+          setWorkouts(merged);
+        }
+
+        if (syncResult.completions && syncResult.completions.length > 0) {
+          const serverIds = new Set(syncResult.completions.map(c => c.id));
+          const merged = [
+            ...completions.filter(c => !serverIds.has(c.id)),
+            ...syncResult.completions,
+          ];
+          setCompletions(merged);
+        }
+
+        setSyncStatus((prev) => ({
+          ...prev,
+          lastSyncTime: syncResult.lastSyncTime,
+          lastError: null,
+        }));
+      }
+
+      return { success: true };
+    } catch (error) {
+      setSyncStatus((prev) => ({
+        ...prev,
+        lastError: error.message,
+      }));
+      return { success: false, error: error.message };
+    }
+  };
+
+  const logoutSync = async () => {
+    const result = await syncService.logout();
+    setSyncStatus({
+      authenticated: false,
+      syncing: false,
+      lastError: null,
+      lastSyncTime: 0,
+    });
+    return result;
+  };
+
+  // Switch to a different profile - cloud-first approach
+  // Clears local data and loads the new profile's data from the server
+  const switchProfile = async (newProfileName) => {
+    const backendURL = syncService.backendURL;
+    const passwordHash = syncService.passwordHash;
+
+    if (!backendURL) {
+      return { success: false, error: 'Not connected to a backend' };
+    }
+
+    try {
+      // Re-initialize with the new profile name (gets new session token)
+      await syncService.initialize(newProfileName, backendURL, passwordHash);
+
+      // Reset lastSyncTime to 0 so we fetch ALL data from this profile
+      syncService.lastSyncTime = 0;
+      localStorage.setItem('syncLastSyncTime', '0');
+
+      // Fetch data from the new profile (send empty arrays, get everything back)
+      const syncResult = await syncService.sync([], []);
+
+      if (syncResult.success) {
+        // Replace local data with server data for this profile
+        const serverWorkouts = (syncResult.workouts || []).filter(w => !w.deletedAt);
+        const serverCompletions = (syncResult.completions || []).filter(c => !c.deletedAt);
+
+        setWorkouts(serverWorkouts);
+        setCompletions(serverCompletions);
+
+        setSyncStatus((prev) => ({
+          ...prev,
+          authenticated: true,
+          profileName: newProfileName,
+          lastSyncTime: syncResult.lastSyncTime,
+          lastError: null,
+        }));
+      } else {
+        // Even if sync returns no data, update profile name
+        setWorkouts([]);
+        setCompletions([]);
+        setSyncStatus((prev) => ({
+          ...prev,
+          authenticated: true,
+          profileName: newProfileName,
+          lastSyncTime: 0,
+          lastError: null,
+        }));
+      }
+
+      return { success: true };
+    } catch (error) {
+      setSyncStatus((prev) => ({
+        ...prev,
+        lastError: error.message,
+      }));
+      return { success: false, error: error.message };
+    }
+  };
+
+  const getSyncStatus = () => ({
+    ...syncStatus,
+    syncing: syncService.syncing,
+  });
+
   // Stats
   const getWorkoutStats = () => {
     if (completions.length === 0) {
@@ -348,7 +569,10 @@ export const WorkoutProvider = ({ children }) => {
     currentDate.setHours(0, 0, 0, 0);
     const completionsByDate = {};
     completions.forEach((c) => {
-      const date = new Date(c.completedAt || c.startedAt);
+      const dateValue = c.completedAt || c.startedAt;
+      if (!dateValue) return; // Skip if no date
+      const date = new Date(dateValue);
+      if (isNaN(date.getTime())) return; // Skip invalid dates
       date.setHours(0, 0, 0, 0);
       const dateStr = date.toISOString().split("T")[0];
       completionsByDate[dateStr] = true;
@@ -400,6 +624,13 @@ export const WorkoutProvider = ({ children }) => {
     importAllData,
     // Stats
     getWorkoutStats,
+    // Cloud Sync
+    testConnection,
+    getProfiles,
+    initializeSync,
+    logoutSync,
+    switchProfile,
+    getSyncStatus,
   };
 
   return (

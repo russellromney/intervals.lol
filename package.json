@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "dependencies": {
     "@preact/compat": "^18.3.1",
@@ -14,6 +16,7 @@
     "react-router-dom": "^6.20.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@preact/preset-vite": "^2.10.2",
     "vite": "^5.0.0"
   }

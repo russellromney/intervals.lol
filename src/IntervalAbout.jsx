@@ -1,41 +1,11 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { getBasePath, useWorkout } from "./WorkoutContext";
 
 const IntervalAbout = () => {
   const basePath = getBasePath();
-  const { exportAllData, importAllData, workouts, completions } = useWorkout();
-  const [importStatus, setImportStatus] = useState(null);
-  const fileInputRef = useRef(null);
-
-  const handleExport = () => {
-    exportAllData();
-  };
-
-  const handleImportClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const result = await importAllData(file);
-      setImportStatus({
-        success: true,
-        message: `Imported ${result.workoutsImported} timers and ${result.completionsImported} history entries. Skipped ${result.workoutsSkipped} duplicate timers.`,
-      });
-    } catch (error) {
-      setImportStatus({
-        success: false,
-        message: error.message,
-      });
-    }
-
-    // Reset file input
-    e.target.value = "";
-  };
+  const { workouts } = useWorkout();
+  const hasTimers = workouts && workouts.length > 0;
 
   return (
     <div className="view active" style={{ display: "block" }}>
@@ -50,7 +20,8 @@ const IntervalAbout = () => {
             <p>
               A simple, free interval timer for workouts, pomodoro sessions, meditation,
               cooking, and anything else that needs timed intervals. No account required,
-              no ads, no tracking. All data is stored locally in your browser.
+              no ads, no tracking. All data is stored locally in your browser. Optionally
+              self-deploy a backend for cross-device sync.
             </p>
           </section>
 
@@ -89,6 +60,7 @@ const IntervalAbout = () => {
               <li><strong>Color coding:</strong> Assign colors to intervals for easy visual tracking</li>
               <li><strong>History tracking:</strong> See your completed sessions and stats</li>
               <li><strong>Works offline:</strong> Once loaded, works without internet</li>
+              <li><strong>Cloud sync:</strong> Optionally sync across devices with your own backend</li>
             </ul>
           </section>
 
@@ -99,44 +71,16 @@ const IntervalAbout = () => {
               localStorage. This means:
             </p>
             <ul className="features-list">
-              <li>Your data never leaves your device</li>
+              <li>Your data never leaves your device (unless you enable cloud sync)</li>
               <li>No account or sign-up required</li>
               <li>Data persists between sessions</li>
               <li>Clearing browser data will delete your timers</li>
               <li>Data is specific to this browser/device</li>
             </ul>
-          </section>
-
-          <section className="about-section">
-            <h2>Backup & Restore</h2>
             <p>
-              Download all your data as a backup file, or restore from a previous backup.
-              This lets you transfer your timers to another device or keep a safe copy.
+              Want to backup your data or sync across devices? Check out the{' '}
+              <Link to={`${basePath}/settings`}>Settings</Link> page.
             </p>
-            <p className="data-summary">
-              You currently have <strong>{workouts.length} timer{workouts.length !== 1 ? 's' : ''}</strong> and{' '}
-              <strong>{completions.length} history entr{completions.length !== 1 ? 'ies' : 'y'}</strong>.
-            </p>
-            <div className="backup-buttons">
-              <button onClick={handleExport} className="btn btn-primary">
-                Download Backup
-              </button>
-              <button onClick={handleImportClick} className="btn btn-secondary">
-                Restore from File
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-              />
-            </div>
-            {importStatus && (
-              <div className={`import-status ${importStatus.success ? 'success' : 'error'}`}>
-                {importStatus.message}
-              </div>
-            )}
           </section>
 
           <section className="about-section">
@@ -185,9 +129,114 @@ const IntervalAbout = () => {
             </div>
           </section>
 
+          <section className="about-section">
+            <h2>Deploying Your Own Backend</h2>
+            <p>
+              Want to self-host the backend for cloud sync? It's easy! The backend is a simple Go server
+              that can be deployed for free on Fly.io (or any cloud provider).
+            </p>
+
+            <h3>Quick Start (Fly.io)</h3>
+            <ol className="how-to-list">
+              <li>
+                <strong>Clone the repository:</strong>
+                <code className="code-block">git clone https://github.com/russellromney/intervals.lol
+cd intervals.lol/backend</code>
+              </li>
+              <li>
+                <strong>Install Fly CLI:</strong>
+                <a href="https://fly.io/docs/hands-on/install-flyctl/" target="_blank" rel="noopener noreferrer">
+                  Download flyctl
+                </a>
+              </li>
+              <li>
+                <strong>Create a Fly app:</strong>
+                <code className="code-block">fly launch</code>
+                <small>Choose a name like <code>intervals-backend</code></small>
+              </li>
+              <li>
+                <strong>Deploy:</strong>
+                <code className="code-block">fly deploy</code>
+              </li>
+              <li>
+                <strong>Get your backend URL:</strong>
+                <code className="code-block">fly status</code>
+                <small>Look for the public URL (e.g., <code>https://intervals-backend.fly.dev</code>)</small>
+              </li>
+            </ol>
+
+            <h3>Using Your Backend</h3>
+            <ol className="how-to-list">
+              <li>
+                Go to the <Link to={`${basePath}/settings`}>Settings</Link> tab
+              </li>
+              <li>
+                Scroll to the <strong>"Cloud Sync"</strong> section
+              </li>
+              <li>
+                Enter your backend URL (e.g., <code>https://your-app.fly.dev</code>)
+              </li>
+              <li>
+                If you set <code>SYNC_PASSWORD</code>, enter the password
+              </li>
+              <li>
+                Click <strong>"Test Connection"</strong> to verify
+              </li>
+              <li>
+                Select an existing profile or create a new one
+              </li>
+              <li>
+                Click <strong>"Enable Cloud Sync"</strong>
+              </li>
+            </ol>
+
+            <h3>How It Works</h3>
+            <ul className="features-list">
+              <li>
+                <strong>Local-first:</strong> All your data is always stored in your browser first
+              </li>
+              <li>
+                <strong>Profile-based:</strong> Each profile has its own set of timers and history
+              </li>
+              <li>
+                <strong>Password protected:</strong> Set <code>SYNC_PASSWORD</code> to restrict access to your backend
+              </li>
+              <li>
+                <strong>Multiple profiles:</strong> Create different profiles for different users or use cases
+              </li>
+              <li>
+                <strong>Automatic sync:</strong> Changes sync every 5 seconds (with debouncing)
+              </li>
+              <li>
+                <strong>Cross-device:</strong> Use the same profile name on any device to sync
+              </li>
+              <li>
+                <strong>Works offline:</strong> Syncing is optional—use locally without a backend
+              </li>
+            </ul>
+
+            <h3>Environment Variables</h3>
+            <ul className="features-list">
+              <li><code>PORT</code> - Server port (default: 8080)</li>
+              <li><code>SYNC_PASSWORD</code> - Password to protect your backend (recommended)</li>
+              <li><code>SQLITE_PATH</code> - Path to SQLite database (default: ./intervals.db)</li>
+              <li><code>TURSO_URL</code> - Turso database URL (optional, overrides SQLite)</li>
+              <li><code>TURSO_AUTH_TOKEN</code> - Turso auth token (if using Turso)</li>
+            </ul>
+
+            <h3>Setting a Password on Fly.io</h3>
+            <p>
+              To protect your backend with a password, set the <code>SYNC_PASSWORD</code> secret:
+            </p>
+            <code className="code-block">fly secrets set SYNC_PASSWORD=your-secret-password</code>
+            <p style={{ marginTop: '10px' }}>
+              <small>Anyone connecting to your backend will need to enter this password.</small>
+            </p>
+          </section>
+
           <div className="about-cta">
             <Link to={basePath || '/'} className="btn btn-primary btn-large">
-              Create Your First Timer
+              {hasTimers ? 'Go to Timers' : 'Create Your First Timer'}
             </Link>
           </div>
         </div>
