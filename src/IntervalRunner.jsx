@@ -16,6 +16,8 @@ const IntervalRunner = () => {
     speak,
     generateId,
     calculateElapsedSeconds,
+    voiceEnabled,
+    setVoiceEnabled,
   } = useWorkout();
 
   const workout = getWorkout(id);
@@ -294,7 +296,7 @@ const IntervalRunner = () => {
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "15px", justifyContent: "center" }}>
+        <div style={{ display: "flex", gap: "15px", justifyContent: "center", flexWrap: "wrap" }}>
           <button
             className="btn btn-secondary"
             onClick={stopTimer}
@@ -308,6 +310,14 @@ const IntervalRunner = () => {
             style={{ padding: "15px 40px", fontSize: "18px" }}
           >
             {timerState.isRunning ? "Pause" : "Start"}
+          </button>
+          <button
+            className={`btn ${voiceEnabled ? 'btn-secondary' : 'btn-secondary'}`}
+            onClick={() => setVoiceEnabled(!voiceEnabled)}
+            style={{ padding: "15px 30px", fontSize: "14px", opacity: voiceEnabled ? 1 : 0.6 }}
+            title={voiceEnabled ? "Voice on" : "Voice off"}
+          >
+            {voiceEnabled ? '🔊 Voice' : '🔇 Voice'}
           </button>
         </div>
 

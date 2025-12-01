@@ -505,7 +505,7 @@ const BackupRestoreSection = () => {
 };
 
 const IntervalSettings = () => {
-  const { darkMode, setDarkMode } = useWorkout();
+  const { darkMode, setDarkMode, voiceEnabled, setVoiceEnabled } = useWorkout();
   const [activeSection, setActiveSection] = useState("appearance");
 
   const sections = [
@@ -606,6 +606,18 @@ const IntervalSettings = () => {
                 onClick={() => setDarkMode(!darkMode)}
               >
                 {darkMode ? 'On' : 'Off'}
+              </button>
+            </div>
+            <div className="setting-row">
+              <div className="setting-info">
+                <label>Voice Announcements</label>
+                <small>Enable or disable voice announcements during workouts</small>
+              </div>
+              <button
+                className={`toggle-btn ${voiceEnabled ? 'active' : ''}`}
+                onClick={() => setVoiceEnabled(!voiceEnabled)}
+              >
+                {voiceEnabled ? 'On' : 'Off'}
               </button>
             </div>
           </section>

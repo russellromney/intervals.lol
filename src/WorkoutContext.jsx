@@ -23,7 +23,10 @@ export const useWorkout = () => {
 export const WorkoutProvider = ({ children }) => {
   const [workouts, setWorkouts] = useState([]);
   const [completions, setCompletions] = useState([]);
-  const [voiceEnabled] = useState(true);
+  const [voiceEnabled, setVoiceEnabled] = useState(() => {
+    const saved = localStorage.getItem("voiceEnabled");
+    return saved ? JSON.parse(saved) : true;
+  });
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("darkMode");
     return saved ? JSON.parse(saved) : false;
@@ -92,6 +95,10 @@ export const WorkoutProvider = ({ children }) => {
     // Update body background to match dark/light mode
     document.body.style.backgroundColor = darkMode ? '#000000' : '#f9fafb';
   }, [darkMode]);
+
+  useEffect(() => {
+    localStorage.setItem("voiceEnabled", JSON.stringify(voiceEnabled));
+  }, [voiceEnabled]);
 
   // Auto-sync when workouts or completions change (with 5s debounce)
   useEffect(() => {
@@ -594,6 +601,7 @@ export const WorkoutProvider = ({ children }) => {
     saveMessage,
     setSaveMessage,
     voiceEnabled,
+    setVoiceEnabled,
     darkMode,
     setDarkMode,
     // Helpers
