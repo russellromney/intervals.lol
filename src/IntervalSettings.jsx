@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useWorkout } from "./WorkoutContext";
 
 const CloudSyncSection = () => {
@@ -174,7 +174,7 @@ const CloudSyncSection = () => {
   };
 
   return (
-    <section className="settings-section">
+    <section className="settings-section" id="cloud-sync">
       <h2>Cloud Sync</h2>
       <p>
         Keep your timers in sync across devices by backing them up to your private cloud backend.
@@ -470,7 +470,7 @@ const BackupRestoreSection = () => {
   };
 
   return (
-    <section className="settings-section">
+    <section className="settings-section" id="backup-restore">
       <h2>Backup & Restore</h2>
       <p>
         Download all your data as a backup file, or restore from a previous backup.
@@ -506,17 +506,96 @@ const BackupRestoreSection = () => {
 
 const IntervalSettings = () => {
   const { darkMode, setDarkMode } = useWorkout();
+  const [activeSection, setActiveSection] = useState("appearance");
+
+  const sections = [
+    { id: "appearance", title: "Appearance" },
+    { id: "backup-restore", title: "Backup & Restore" },
+    { id: "cloud-sync", title: "Cloud Sync" },
+  ];
+
+  const handleSectionClick = (sectionId) => {
+    setActiveSection(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = element.offsetTop - 60; // Small offset for comfortable spacing
+      window.scrollTo({ top: offset, behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sectionElements = sections.map((s) => ({
+        id: s.id,
+        element: document.getElementById(s.id),
+      }));
+
+      for (let section of sectionElements) {
+        if (section.element) {
+          const rect = section.element.getBoundingClientRect();
+          if (rect.top <= 200 && rect.bottom > 200) {
+            setActiveSection(section.id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="view active" style={{ display: "block" }}>
-      <div className="container">
-        <header className="page-header">
-          <h1>Settings</h1>
-        </header>
+      <div style={{ display: "flex", gap: "40px", maxWidth: "1200px", margin: "0 auto", padding: "0 20px" }}>
+        {/* Sidebar */}
+        <nav
+          style={{
+            position: "sticky",
+            top: "20px",
+            width: "200px",
+            height: "fit-content",
+            fontSize: "14px",
+          }}
+        >
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {sections.map((section) => (
+              <li key={section.id} style={{ marginBottom: "12px" }}>
+                <button
+                  onClick={() => handleSectionClick(section.id)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: activeSection === section.id ? "#4ade80" : "#999",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    fontSize: "14px",
+                    padding: 0,
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (activeSection !== section.id) e.target.style.color = "#ccc";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeSection !== section.id) e.target.style.color = "#999";
+                  }}
+                >
+                  {section.title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-        <div className="settings-content">
-          <section className="settings-section">
-            <h2>Appearance</h2>
+        {/* Main Content */}
+        <div style={{ flex: 1 }}>
+          <header className="page-header">
+            <h1>Settings</h1>
+          </header>
+
+          <div className="settings-content">
+            <section className="settings-section" id="appearance">
+              <h2>Appearance</h2>
             <div className="setting-row">
               <div className="setting-info">
                 <label>Dark Mode</label>
@@ -531,8 +610,9 @@ const IntervalSettings = () => {
             </div>
           </section>
 
-          <BackupRestoreSection />
-          <CloudSyncSection />
+            <BackupRestoreSection />
+            <CloudSyncSection />
+          </div>
         </div>
       </div>
     </div>

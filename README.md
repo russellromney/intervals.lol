@@ -86,7 +86,7 @@ Want to run your own instance? See [DEPLOY.md](./DEPLOY.md) for complete setup g
 ✅ **LocalStorage** - All workouts saved in browser
 ✅ **Offline First** - Works without internet connection
 ✅ **Optional Cloud Sync** - Only enabled if you deploy your own backend
-✅ **Password Protected** - Backend can be secured with `SYNC_PASSWORD`
+✅ **Optional Password** - Secure your backend with `SYNC_PASSWORD` (recommended for public access)
 ✅ **Open Source** - Audit the code yourself at any time
 
 ## License

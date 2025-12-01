@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getBasePath, useWorkout } from "./WorkoutContext";
 
@@ -6,16 +6,100 @@ const IntervalAbout = () => {
   const basePath = getBasePath();
   const { workouts } = useWorkout();
   const hasTimers = workouts && workouts.length > 0;
+  const [activeSection, setActiveSection] = useState("");
+
+  const sections = [
+    { id: "what-is", title: "What is intervals.lol?" },
+    { id: "use-cases", title: "Use Cases" },
+    { id: "features", title: "Features" },
+    { id: "data-storage", title: "Where is my data saved?" },
+    { id: "how-to-use", title: "How to Use" },
+    { id: "templates", title: "Quick Start Templates" },
+    { id: "backend", title: "Deploying Your Own Backend" },
+  ];
+
+  const handleSectionClick = (sectionId) => {
+    setActiveSection(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = element.offsetTop - 60; // Small offset for comfortable spacing
+      window.scrollTo({ top: offset, behavior: "smooth" });
+    }
+  };
+
+  // Track which section is in view
+  useEffect(() => {
+    const handleScroll = () => {
+      const sectionElements = sections.map((s) => ({
+        id: s.id,
+        element: document.getElementById(s.id),
+      }));
+
+      for (let section of sectionElements) {
+        if (section.element) {
+          const rect = section.element.getBoundingClientRect();
+          if (rect.top <= 200 && rect.bottom > 200) {
+            setActiveSection(section.id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="view active" style={{ display: "block" }}>
-      <div className="container">
+      <div style={{ display: "flex", gap: "40px", maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Sidebar */}
+        <nav
+          style={{
+            position: "sticky",
+            top: "20px",
+            width: "200px",
+            height: "fit-content",
+            fontSize: "14px",
+          }}
+        >
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {sections.map((section) => (
+              <li key={section.id} style={{ marginBottom: "12px" }}>
+                <button
+                  onClick={() => handleSectionClick(section.id)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: activeSection === section.id ? "#4ade80" : "#999",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    fontSize: "14px",
+                    padding: 0,
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (activeSection !== section.id) e.target.style.color = "#ccc";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeSection !== section.id) e.target.style.color = "#999";
+                  }}
+                >
+                  {section.title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Main Content */}
+        <div style={{ flex: 1 }}>
         <header className="page-header">
           <h1>About</h1>
         </header>
 
         <div className="about-content">
-          <section className="about-section">
+          <section className="about-section" id="what-is">
             <h2>What is intervals.lol?</h2>
             <p>
               A simple, free interval timer for workouts, pomodoro sessions, meditation,
@@ -25,7 +109,7 @@ const IntervalAbout = () => {
             </p>
           </section>
 
-          <section className="about-section">
+          <section className="about-section" id="use-cases">
             <h2>Use Cases</h2>
             <div className="use-cases-grid">
               <div className="use-case">
@@ -51,7 +135,7 @@ const IntervalAbout = () => {
             </div>
           </section>
 
-          <section className="about-section">
+          <section className="about-section" id="features">
             <h2>Features</h2>
             <ul className="features-list">
               <li><strong>Custom timers:</strong> Create unlimited timers with any number of intervals</li>
@@ -64,7 +148,7 @@ const IntervalAbout = () => {
             </ul>
           </section>
 
-          <section className="about-section">
+          <section className="about-section" id="data-storage">
             <h2>Where is my data saved?</h2>
             <p>
               All your timers and history are saved <strong>locally in your browser</strong> using
@@ -83,7 +167,7 @@ const IntervalAbout = () => {
             </p>
           </section>
 
-          <section className="about-section">
+          <section className="about-section" id="how-to-use">
             <h2>How to Use</h2>
             <ol className="how-to-list">
               <li>
@@ -104,7 +188,7 @@ const IntervalAbout = () => {
             </ol>
           </section>
 
-          <section className="about-section">
+          <section className="about-section" id="templates">
             <h2>Quick Start Templates</h2>
             <p>
               Don't know where to start? Here are some common timer setups:
@@ -129,7 +213,7 @@ const IntervalAbout = () => {
             </div>
           </section>
 
-          <section className="about-section">
+          <section className="about-section" id="backend">
             <h2>Deploying Your Own Backend</h2>
             <p>
               Want to self-host the backend for cloud sync? It's easy! The backend is a simple Go server
@@ -199,7 +283,7 @@ cd intervals.lol/backend</code>
                 <strong>Profile-based:</strong> Each profile has its own set of timers and history
               </li>
               <li>
-                <strong>Password protected:</strong> Set <code>SYNC_PASSWORD</code> to restrict access to your backend
+                <strong>Optional password:</strong> Set <code>SYNC_PASSWORD</code> to restrict access (recommended for public backends)
               </li>
               <li>
                 <strong>Multiple profiles:</strong> Create different profiles for different users or use cases
@@ -218,19 +302,19 @@ cd intervals.lol/backend</code>
             <h3>Environment Variables</h3>
             <ul className="features-list">
               <li><code>PORT</code> - Server port (default: 8080)</li>
-              <li><code>SYNC_PASSWORD</code> - Password to protect your backend (recommended)</li>
+              <li><code>SYNC_PASSWORD</code> - Optional password to protect your backend (if not set, backend works without password)</li>
               <li><code>SQLITE_PATH</code> - Path to SQLite database (default: ./intervals.db)</li>
               <li><code>TURSO_URL</code> - Turso database URL (optional, overrides SQLite)</li>
               <li><code>TURSO_AUTH_TOKEN</code> - Turso auth token (if using Turso)</li>
             </ul>
 
-            <h3>Setting a Password on Fly.io</h3>
+            <h3>Securing Your Backend (Optional)</h3>
             <p>
-              To protect your backend with a password, set the <code>SYNC_PASSWORD</code> secret:
+              To require a password to connect to your backend, set the <code>SYNC_PASSWORD</code> secret:
             </p>
             <code className="code-block">fly secrets set SYNC_PASSWORD=your-secret-password</code>
             <p style={{ marginTop: '10px' }}>
-              <small>Anyone connecting to your backend will need to enter this password.</small>
+              <small>If you don't set a password, anyone can connect to your backend without authentication. We recommend setting one if your backend is publicly accessible.</small>
             </p>
           </section>
 
@@ -239,6 +323,7 @@ cd intervals.lol/backend</code>
               {hasTimers ? 'Go to Timers' : 'Create Your First Timer'}
             </Link>
           </div>
+        </div>
         </div>
       </div>
     </div>
