@@ -547,14 +547,14 @@ const IntervalSettings = () => {
 
   return (
     <div className="view active" style={{ display: "block" }}>
-      <div style={{ display: "flex", gap: "40px", maxWidth: "1200px", margin: "0 auto", padding: "0 20px" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", paddingLeft: "240px", padding: "0 20px 0 240px", position: "relative" }}>
         {/* Sidebar */}
         <nav
           style={{
-            position: "sticky",
-            top: "20px",
+            position: "fixed",
+            top: "80px",
+            left: "max(20px, calc((100vw - 1200px) / 2))",
             width: "200px",
-            height: "fit-content",
             fontSize: "14px",
           }}
         >
@@ -588,7 +588,7 @@ const IntervalSettings = () => {
         </nav>
 
         {/* Main Content */}
-        <div style={{ flex: 1 }}>
+        <div>
           <header className="page-header">
             <h1>Settings</h1>
           </header>
