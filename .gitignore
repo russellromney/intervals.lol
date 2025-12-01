@@ -43,3 +43,8 @@ playwright-report/
 
 # OS
 Thumbs.db
+
+# Backend
+backend/server
+backend/intervals.db
+backend/.env
