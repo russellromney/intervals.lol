@@ -3,7 +3,9 @@ package store
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"intervals-sync/internal/models"
+	"strings"
 	"time"
 
 	_ "github.com/tursodatabase/go-libsql"
@@ -68,6 +70,23 @@ func NewSQLiteStore(cfg *Config) (*SQLiteStore, error) {
 	if err := db.Ping(); err != nil {
 		return nil, err
 	}
+
+	// Configure for better concurrency (file-based only)
+	if !strings.Contains(cfg.SQLitePath, ":memory:") {
+		// Busy timeout - retry for up to 1 second if locked
+		if _, err := db.Exec("PRAGMA busy_timeout = 1000"); err != nil {
+			db.Close()
+			return nil, fmt.Errorf("failed to set busy_timeout: %w", err)
+		}
+		// WAL mode allows concurrent readers while writing
+		if _, err := db.Exec("PRAGMA journal_mode = WAL"); err != nil {
+			db.Close()
+			return nil, fmt.Errorf("failed to enable WAL mode: %w", err)
+		}
+	}
+
+	// Limit max open connections to prevent contention
+	db.SetMaxOpenConns(1)
 
 	store := &SQLiteStore{db: db}
 
